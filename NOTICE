@@ -1,0 +1,9 @@
+Koma
+Copyright 2026 Hanzo AI Inc.
+
+The contents of this repository are licensed under the Apache License 2.0 (see
+LICENSE).
+
+The model served under the id `koma` is proprietary. No model weights are
+distributed with or by this repository: Koma is reachable only through the Hanzo
+API, under the Hanzo Terms of Service (https://hanzo.ai/terms).

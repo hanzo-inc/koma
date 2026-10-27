@@ -1,0 +1,11 @@
+# hanzo-inc/koma — read by the hanzoai/ci reusable (.github/workflows/cicd.yml)
+# and by platform.hanzo.ai.
+#
+# No images: Koma is a product SKU served by hanzo-inc/zen, not a service built
+# from this repository. The catalog entry that names it (price, rungs, retail) is
+# declared in hanzo/universe charts/app/files/zen/catalog.yaml and reconciled by
+# Hanzo CD, so there is nothing here to build and nothing to deploy.
+#
+# No test gate: this repository holds the model card, the API contract and one
+# example. The tests that matter are zen's (media_adapt_test.go fits every size in
+# this README to the render ladder against the endpoints' real constraints).
