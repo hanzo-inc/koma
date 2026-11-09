@@ -1,94 +1,52 @@
-<p align="center"><b>koma</b><br><i>Hanzo's image model</i></p>
+<p align="center"><b>koma (駒)</b><br><i>Hanzo's video generation & motion model</i></p>
 
 # Koma
 
-Koma is Hanzo's image model, served from Hanzo's own inference fabric at
-`api.hanzo.ai` under the single id **`koma`**. It renders one image per request
-from a text prompt, at any aspect ratio from a 9:21 portrait to a 21:9 banner.
+Koma (`koma`, `koma-1`) is Hanzo's video generation and motion model, served from Hanzo's inference fabric at `api.hanzo.ai` under the canonical id **`koma`** (open foundation: **`zen-director`** / [`zenlm/zen-director`](https://github.com/zenlm/zen-director)). It generates cinematic video clips with temporal character continuity, parametric camera choreography, and keyframe-guided motion trajectories.
 
 ```bash
-curl https://api.hanzo.ai/v1/images/generations \
+curl https://api.hanzo.ai/v1/videos/generations \
   -H "Authorization: Bearer $HANZO_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"model":"koma","prompt":"a red cube on a white table","size":"1792x1024"}'
+  -d '{"model":"koma","prompt":"slow dolly-in across a rain-lit Tokyo alley at night, anamorphic 35mm lens"}'
 ```
 
-```json
-{"data":[{"b64_json":"/9j/4AAQSkZJRgABAQAAAQABAAD…"}]}
-```
-
-That is the whole API: the OpenAI images schema, one model id, no vendor
-vocabulary to learn. Koma answers `b64_json` whatever `response_format` asks for.
-
-## What it renders
+## Capabilities
 
 | | |
 |---|---|
-| Modes | text → image |
-| Output | JPEG, base64 in the OpenAI `data[].b64_json` envelope |
-| Images per request | 1 |
-| Aspect ratios | 9:21 5:11 1:2 7:13 3:5 2:3 3:4 6:7 1:1 7:6 4:3 3:2 5:3 13:7 2:1 11:5 21:9 |
-| Sizes | any `size` you send; Koma fits it to the nearest ratio it can draw |
-| Latency | 1.6 s to 4.4 s per render, measured on production hardware |
+| Modes | text → video, image + text → video (`/v1/videos/generations`) |
+| Model IDs | `koma`, `koma-1` (open foundation: `zen-director`, `zen-video`) |
+| Controls | Prompt, seed, aspect ratio, keyframe conditioning, camera motion |
+| Backwards compatibility | `koma` also resolves as an alias for [`iro`](https://github.com/hanzo-inc/iro) on `POST /v1/images/generations` for callers written against the pre-Iro image SKU |
 
-Koma is a **single image per call**, and says so rather than quietly serving one
-for an `n` of four: `n: 4` is refused with a message that asks for one call per
-image. The per-image price is then right for what was delivered.
+- **Temporal character continuity** — maintains identity, costume attributes, facial geometry, and lighting coherence across multi-cut sequences.
+- **Shot-level director control** — parametric camera choreography (focal length, pan/tilt rate, crane elevation, depth-of-field).
+- **High-fidelity motion synthesis** — continuous flow-matching spatial-temporal diffusion eliminating morphing and temporal flicker.
+- **Keyframe-guided trajectories** — interpolates smoothly between storyboard keyframes with physics-aware object kinematics.
 
-### Sizes
+## Creative AI Lineup
 
-You may ask for the size you actually want — `1792x1024`, `1024x1792`,
-`1536x1024`, `256x256`. Koma **fits** the request to the nearest renderable shape
-instead of refusing it, because the raw render ladder is narrower than the sizes
-people ask for: each edge is on a 16-pixel grid between 512 and 1568, and the
-whole image is at most 1,062,400 pixels. `1792x1024` becomes `1344x768` — the
-same 7:4 ratio, the largest render that fits.
+Each creative modality in Hanzo has its own dedicated model and repository:
 
-`aspect_ratio` wins when you send it, and drops `size`/`width`/`height`. Stating
-both is a contradiction, not a preference.
-
-| you ask | you get | ratio |
-|---|---|---|
-| `1024x1024` | `1024x1024` | 1:1 |
-| `1792x1024` | `1344x768` | 7:4 |
-| `1024x1792` | `768x1344` | 3:7 |
-| `1536x1024` | `1248x832` | 3:2 |
-| `512x512` | `512x512` | 1:1 |
-| `256x256` | `512x512` | lifted to the floor |
-
-## Pricing
-
-**$0.16 per image**, flat. No charge for a refused request, and no charge for an
-image that failed to render. Koma is a paid model: free accounts reach it on the
-free allowance (50 requests a day), a paid plan reaches it on its own included
-usage.
-
-| | |
-|---|---|
-| Model id | `koma` |
-| Price | $0.16 / image |
-| Endpoint | `POST /v1/images/generations` |
-| Minimum tier | paid |
-
-## Not Koma
-
-- **Image editing** is not available on Koma yet. `POST /v1/images/edits` and an
-  `image` field are refused rather than silently ignored.
-- **Video** is not Koma. There is no video model on the platform today.
+| Model | Modality | Endpoint | Repository | Open Foundation |
+|---|---|---|---|---|
+| **Iro** (`iro`) | Image generation & editing | `POST /v1/images/generations` | [`hanzo-inc/iro`](https://github.com/hanzo-inc/iro) | `zen3-image` (`zenlm/zen-artist`) |
+| **Koma** (`koma`) | Video generation & motion | `POST /v1/videos/generations` | [`hanzo-inc/koma`](https://github.com/hanzo-inc/koma) | `zen-director` (`zenlm/zen-director`) |
+| **Koe** (`koe`) | Voice & dialogue synthesis | `POST /v1/audio/voice` | [`hanzo-inc/koe`](https://github.com/hanzo-inc/koe) | `zen3-tts` (`zenlm/zen-dub`) |
+| **Oto** (`oto`) | Foley & sound effects | `POST /v1/audio/foley` | [`hanzo-inc/oto`](https://github.com/hanzo-inc/oto) | `zen-foley` (`zenlm/zen-foley`) |
+| **Uta** (`uta`) | Music & score generation | `POST /v1/audio/music` | [`hanzo-inc/uta`](https://github.com/hanzo-inc/uta) | `zen-musician` (`zenlm/zen-musician`) |
+| **Mori** (`mori`) | 3D assets, meshes & scenes | `POST /v1/videos/generations` | [`hanzo-inc/mori`](https://github.com/hanzo-inc/mori) | `zen-3d` (`zenlm/zen-3d`) |
 
 ## Surfaces
 
-Koma is a product SKU, not a repository you run. The inference lives in
-[`hanzo-inc/zen`](https://github.com/hanzo-inc/zen); the catalog that names it
-(price, rungs, retail) is declared in `hanzo/universe`
-(`charts/app/files/zen/catalog.yaml`) and reconciled by Hanzo CD.
+Koma is served by [`hanzo-inc/zen`](https://github.com/hanzo-inc/zen) and declared in `hanzo/universe` (`charts/app/files/zen/catalog.yaml`), with first-party Studio integration in [`hanzo-inc/studio`](https://github.com/hanzo-inc/studio) (`video.generate`).
 
+- Product page: <https://hanzo.ai/koma>
 - API and docs: <https://api.hanzo.ai/v1>, <https://docs.hanzo.ai>
-- Dashboard: <https://platform.hanzo.ai>
+- Studio & Dashboard: <https://hanzo.ai/studio>, <https://platform.hanzo.ai>
 - Agent notes for this repo: [LLM.md](./LLM.md)
 
 ## License
 
-The contents of this repository are licensed under Apache-2.0. The model Koma
-serves is proprietary and **no weights are distributed** — Koma is available only
-through the Hanzo API under the [Hanzo Terms](https://hanzo.ai/terms).
+The contents of this repository are licensed under Apache-2.0. The proprietary `koma-1` weights are served through the Hanzo API under the [Hanzo Terms](https://hanzo.ai/terms); the open foundation `zen-director` is available under Apache-2.0 at [`huggingface.co/zenlm/zen-director`](https://huggingface.co/zenlm/zen-director).
