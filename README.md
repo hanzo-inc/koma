@@ -18,7 +18,6 @@ curl https://api.hanzo.ai/v1/videos/generations \
 | Modes | text → video, image + text → video (`/v1/videos/generations`) |
 | Model IDs | `koma`, `koma-1` (open foundation: `zen-director`, `zen-video`) |
 | Controls | Prompt, seed, aspect ratio, keyframe conditioning, camera motion |
-| Backwards compatibility | `koma` also resolves as an alias for [`iro`](https://github.com/hanzo-inc/iro) on `POST /v1/images/generations` for callers written against the pre-Iro image SKU |
 
 - **Temporal character continuity** — maintains identity, costume attributes, facial geometry, and lighting coherence across multi-cut sequences.
 - **Shot-level director control** — parametric camera choreography (focal length, pan/tilt rate, crane elevation, depth-of-field).
