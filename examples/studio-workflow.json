@@ -1,0 +1,14 @@
+{
+  "name": "Koma (\u99d2) Studio Workflow",
+  "description": "Hanzo Creative AI Video Generation Model (`koma` / `/v1/videos/generations`)",
+  "steps": [
+    {
+      "id": "koma-step-1",
+      "kind": "video.generate",
+      "model": "koma",
+      "input": {
+        "prompt": "Slow dolly-in across a rain-lit Tokyo alley at night, anamorphic lens"
+      }
+    }
+  ]
+}
