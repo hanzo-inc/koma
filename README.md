@@ -2,6 +2,8 @@
 
 # Koma
 
+[![Open in Hanzo](https://hanzo.app/badges/open-in-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzo-inc/koma&ref=main&action=open) [![Edit with Hanzo](https://hanzo.app/badges/edit-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzo-inc/koma&ref=main&action=edit) [![Deploy with Hanzo](https://hanzo.app/badges/deploy-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzo-inc/koma&ref=main&action=deploy)
+
 Koma (`koma`, `koma-1`) is Hanzo's video generation and motion model, served from Hanzo's inference fabric at `api.hanzo.ai` under the canonical id **`koma`** (open foundation: **`zen-director`** / [`zenlm/zen-director`](https://github.com/zenlm/zen-director)). It generates cinematic video clips with temporal character continuity, parametric camera choreography, and keyframe-guided motion trajectories.
 
 ```bash
